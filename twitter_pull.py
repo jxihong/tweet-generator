@@ -12,14 +12,29 @@ username = 'dennisnliao'
 numTweets = 20
 
 profile = twitter.users.lookup(screen_name = username)
-# We need to investigate rate limiting to see why we only get 200
 numTweets = profile[0]['statuses_count']
 
-tweets = twitter.statuses.user_timeline(screen_name = username, count = numTweets)
+tweets = []
+i = 0
+interval = 100
+id = 537408199532347393
+while(i < numTweets):
+    tweets += twitter.statuses.user_timeline(screen_name = username, count = interval, max_id = id)
+    i += interval
+    currentLen = len(tweets)
+    id = tweets[currentLen - 1]['id']
+print(len(tweets))
 
 with open(username + '_tweets.csv', 'w') as f:
     for tweet in tweets:
-        f.write(tweet['created_at'])
-        f.write(',')
-        f.write(tweet['text'])
-        f.write('\n')
+        try:
+            f.write(tweet['created_at'])
+            f.write(',')
+            f.write(tweet['text'])
+            f.write('\n')
+        except:
+            print('FAILED TO WRITE TWEET TO FILE:')
+            print(tweet['created_at'])
+            print(tweet['text'])
+        finally:
+            pass
