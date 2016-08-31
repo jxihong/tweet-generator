@@ -13,7 +13,6 @@ def strip_non_ascii(text):
 def unescape_text(text):
     html_parser = HTMLParser()
     unescaped = html_parser.unescape(text)
-    
     return unescaped
 
 
@@ -24,15 +23,16 @@ def clean_text(text):
 
     cleaned = re.sub(URLREGEX, '', text)
     cleaned = re.sub(HASHREGEX, '', cleaned)
-    cleaned == re.sub(MENTIONREGEX, '', cleaned)
-    
+    cleaned = re.sub(MENTIONREGEX, '', cleaned)
+    cleaned.replace('\n', ' ')
+
     return cleaned
 
 
 def preprocess(tweet):
     tweet = strip_non_ascii(tweet)
 
-    text = tweet.decode("utf-8", "ignore").encode("ascii", "ignore")    
+    text = tweet.decode("utf-8", "ignore").encode("ascii", "ignore")
     text = text.rstrip()
     text = unescape_text(text)
     text = clean_text(text)
@@ -41,18 +41,18 @@ def preprocess(tweet):
 
 def preprocess_file(input, output):
     out = codecs.open(output, "w", "utf-8")
-    
+
     with open(input) as tweets:
         for tweet in tweets:
             text = tweet.decode("utf-8", "ignore").encode("ascii", "ignore")
             text = text.rstrip()
             text = unescape_text(text)
             text = clean_text(text)
-        
+
             out.write("%s\n" % text)
-    
+
     out.close()
-     
+
 
 def main(argv):
     input = ''
@@ -63,7 +63,7 @@ def main(argv):
     except getopt.GetoptError:
         print 'twitter_preprocess.py -i <input> -o <output>'
         sys.exit(2)
-        
+
     for opt,arg in opts:
         if opt == '-h':
             print 'pan.py -i <input> -o <output>'
@@ -72,12 +72,12 @@ def main(argv):
             input = arg
         elif opt in ('-o', '--output'):
             output = arg
-            
+
     print "Input: ", input
     print "Output: ", output
-    
+
     preprocess_file(input, output)
 
-    
+
 if __name__=='__main__':
     main(sys.argv[1:])

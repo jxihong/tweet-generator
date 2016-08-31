@@ -24,7 +24,7 @@ while(i < numTweets):
     tweets += twitter.statuses.user_timeline(screen_name = username, count = myCount, max_id = id)
     i += interval
     id = tweets[myCount - 1]['id'] - 1
-        with open(username + '_tweets.csv', 'w') as f:
+    with open(username + '_tweets.csv', 'w') as f:
         for tweet in tweets:
             text = tweet['text']
             text = preprocess(text)
@@ -35,4 +35,4 @@ while(i < numTweets):
                 print('FAILED TO WRITE TWEET TO FILE:')
                 print(tweet['text'])
             finally:
-                continue
+                pass
