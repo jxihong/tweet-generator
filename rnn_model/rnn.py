@@ -9,7 +9,6 @@ from tensorflow.python.ops import rnn
 from tensorflow.python.ops import rnn_cell
 from tensorflow.python.ops import seq2seq
 
-from reader import DataReader
 
 class RNNModel():
 
@@ -24,15 +23,15 @@ class RNNModel():
         self._targets = tf.placeholder(tf.int32, [self.batch_size, self.seq_length])
         
         #Define RNN tensor
-        lstm_cell = rnn_cell.BasicLSTMCell(size)
-        self.cells = rnn_cell.MultiRNNCell([lstm_cell] * config.num_layers)        
-        self._initial_state = cells.zero_state(self.config.batch_size, tf.float32)
+        lstm_cell = rnn_cell.BasicLSTMCell(size, state_is_tuple=True)
+        self.cells = rnn_cell.MultiRNNCell([lstm_cell] * config.num_layers, state_is_tuple=True)        
+        self._initial_state = self.cells.zero_state(self.batch_size, tf.float32)
         
         #Converting Input in an Embedded form
         with tf.device("/cpu:0"): #Tells Tensorflow what GPU to use specifically
             embedding = tf.get_variable("embedding", [vocab_size, size])
             embeddingLookedUp = tf.nn.embedding_lookup(embedding, self._input_data)
-            inputs = tf.split(1, self.seq_size, embeddingLookedUp)
+            inputs = tf.split(1, self.seq_length, embeddingLookedUp)
             inputTensorsAsList = [tf.squeeze(input_, [1]) for input_ in inputs]
         
         #Define softmax values

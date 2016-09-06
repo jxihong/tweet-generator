@@ -15,7 +15,7 @@ def read_words(filename):
     
 
 def file_to_tensor(filename, word_to_id):
-    data = read_words(filename)
+    data = open(filename, 'r').read()
     return [word_to_id[word] for word in data]
 
 
@@ -29,10 +29,11 @@ class DataReader():
             raise IOError("Input data file not found.")
         else:
             self.build_vocab(data)
-                    
-    
+            
+        self.generate_batches(self.get_tensor(data))
+        
     def build_vocab(self, data):
-        raw_data = read_words(data)
+        raw_data = open(data, 'r').read()
         
         counter = collections.Counter(raw_data)
         count_pairs = sorted(counter.items(), key=lambda x: -x[1])
@@ -52,6 +53,8 @@ class DataReader():
         batch_len = len(raw_tensor) // (self.batch_size * self.seq_length)
         if batch_len == 0:
             raise ValueError("batch_len == 0, decrease batch_size or seq_length")
+        
+        self.num_batches = batch_len
         
         raw_tensor = raw_tensor[:self.batch_size * self.seq_length * batch_len]
         
