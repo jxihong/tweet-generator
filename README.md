@@ -1,3 +1,5 @@
-# twitter_api_project
+# Twitter Character LSTM
 
-Objective: Learn about the Twitter API and TensorFlow by building a Donald Trump Twitter bot.
+Construct a Multi-layer Character Recurrent Neural Network (LSTM) in Python using Tensorflow.
+
+Inspired by Andrej Karpathy's blog on [Character RNN](http://karpathy.github.io/2015/05/21/rnn-effectiveness)
